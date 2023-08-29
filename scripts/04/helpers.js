@@ -1,7 +1,8 @@
 const {
   EC2Client,
   AuthorizeSecurityGroupIngressCommand,
-  CreateSecurityGroupCommand
+  CreateSecurityGroupCommand,
+  DescribeLaunchTemplateVersionsCommand
 } = require('@aws-sdk/client-ec2')
 const {
   IAMClient,
@@ -96,9 +97,22 @@ async function createIamRole (roleName) {
   return data.InstanceProfile.Arn
 }
 
+async function getLaunchTemplateVersion(launchTemplateName) {
+  const params = {
+    LaunchTemplateName: launchTemplateName
+  }
+  const command = new DescribeLaunchTemplateVersionsCommand(params)
+  const response = await sendCommand(command)
+
+  const lt = response.LaunchTemplateVersions.sort( (a, b) => b.VersionNumber - a.VersionNumber )
+  console.debug(`Latest version of ${launchTemplateName}: `, lt[0].VersionNumber)
+  return lt[0]
+}
+
 module.exports = {
   createIamRole,
   createSecurityGroup,
+  getLaunchTemplateVersion,
   sendCommand,
   sendAutoScalingCommand,
   sendELBCommand

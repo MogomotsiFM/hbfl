@@ -1,10 +1,13 @@
 #!/bin/bash
-cd home/ec2-user
-cd hbfl
-git pull
-sudo npm i
+sudo apt-get update
+sudo apt-get -y install git
+rm -rf /home/bitnami/hbfl
+git clone https://github.com/MogomotsiFM/hbfl.git /home/bitnami/hbfl
+chown -R bitnami: /home/bitnami/hbfl
+cd /home/bitnami/hbfl
+npm ci
 sudo npm audit fix --force
-sudo npm run start
+npm run start
 
 # The above commands base64 encoded for entering into UserData
-# IyEvYmluL2Jhc2gKY2QgaG9tZS9lYzItdXNlcgpjZCBoYmZsCmdpdCBwdWxsCnN1ZG8gbnBtIGkKc3VkbyBucG0gYXVkaXQgZml4IC0tZm9yY2UKc3VkbyBucG0gcnVuIHN0YXJ0
+# IyEvYmluL2Jhc2gKc3VkbyBhcHQtZ2V0IHVwZGF0ZQpzdWRvIGFwdC1nZXQgLXkgaW5zdGFsbCBnaXQKcm0gLXJmIC9ob21lL2JpdG5hbWkvaGJmbApnaXQgY2xvbmUgaHR0cHM6Ly9naXRodWIuY29tL01vZ29tb3RzaUZNL2hiZmwuZ2l0IC9ob21lL2JpdG5hbWkvaGJmbApjaG93biAtUiBiaXRuYW1pOiAvaG9tZS9iaXRuYW1pL2hiZmwKY2QgL2hvbWUvYml0bmFtaS9oYmZsCm5wbSBjaQpzdWRvIG5wbSBhdWRpdCBmaXggLS1mb3JjZQpucG0gcnVuIHN0YXJ0
