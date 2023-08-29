@@ -1,4 +1,4 @@
-const { writeFile } = require('fs/promises')
+const { mkdir, writeFile } = require('fs/promises')
 const path = require('path')
 const os = require('os')
 
@@ -10,6 +10,13 @@ async function persistKeyPair (keyData) {
   }
 
   try {
+    console.debug(`Private key location: ${keyPath}`)
+    try {
+      await mkdir(path.join(os.homedir(), '.ssh'))
+    } catch (err) {
+      //Swallow the exception essentially assuming that the folder already exists
+      console.debug('The folder already exists')
+    }
     await writeFile(keyPath, keyData.KeyMaterial, options)
     console.log('Key written to', keyPath)
     return keyData.KeyName

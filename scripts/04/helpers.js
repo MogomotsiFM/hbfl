@@ -18,22 +18,22 @@ const {
 } = require('@aws-sdk/client-auto-scaling')
 
 async function sendCommand (command) {
-  const client = new EC2Client({ region: process.env.AWS_REGION })
+  const client = new EC2Client({ region: 'us-east-1', profile: 'Admin' })
   return client.send(command)
 }
 
 async function sendIAMCommand (command) {
-  const client = new IAMClient({ region: process.env.AWS_REGION })
+  const client = new IAMClient({ region: 'us-east-1', profile: 'Admin' })
   return client.send(command)
 }
 
 async function sendELBCommand (command) {
-  const client = new ElasticLoadBalancingV2Client({ region: process.env.AWS_REGION })
+  const client = new ElasticLoadBalancingV2Client({ region: 'us-east-1', profile: 'Admin' })
   return client.send(command)
 }
 
 async function sendAutoScalingCommand (command) {
-  const client = new AutoScalingClient({ region: process.env.AWS_REGION })
+  const client = new AutoScalingClient({ region: 'us-east-1', profile: 'Admin' })
   return client.send(command)
 }
 

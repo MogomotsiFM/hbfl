@@ -9,7 +9,7 @@ const {
 
 async function execute () {
   try {
-    const sgId = await createSecurityGroup('hamster_redis_sg', 6379)
+    const sgId = await createSecurityGroup('hamster_redis_sg0', 6379)
     const response = await createRedisCluster('hamster', sgId)
     console.log(response)
   } catch (err) {
@@ -18,7 +18,15 @@ async function execute () {
 }
 
 async function createRedisCluster (clusterName, sgId) {
-  // TODO: Create redis cache cluster
+  const params = {
+    CacheClusterId: clusterName,
+    CacheNodeType: 'cache.t2.micro',
+    Engine: 'redis',
+    NumCacheNodes: 1, // For redis it has to be one
+    SecurityGroupIds: [ sgId ]
+  }
+  const command = new CreateCacheClusterCommand(params)
+  return sendElastiCacheCommand(command)
 }
 
 execute()

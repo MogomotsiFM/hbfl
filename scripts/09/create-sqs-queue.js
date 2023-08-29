@@ -17,7 +17,15 @@ async function execute () {
 }
 
 function createQueue (queueName) {
-  // TODO: Create params const for creating queue
+  const params = {
+    QueueName: queueName,
+    Attributes: {
+      DelaySeconds: 0,
+      MessageRetentionPeriod: 345600,
+      VisibilityTimeout: 30,
+      ReceiveMessageWaitTimeSeconds: 0 // Long polling time set to 0 and let the consumers decide how long to poll
+    }
+  }
 
   const command = new CreateQueueCommand(params)
   return sendCommand(command)

@@ -102,7 +102,7 @@ function upload (file, ip) {
     client.scp(file, {
       host: ip,
       username: 'bitnami',
-      privateKey: require('fs').readFileSync(path.join(os.homedir(), '.ssh', 'hamster_key')),
+      privateKey: require('fs').readFileSync(path.join(os.homedir(), '.ssh', 'hamster_key_60')),
       path: '/home/bitnami/'
     },
     myClient,
@@ -119,13 +119,13 @@ function unpack (ip) {
       'unzip -o -q ./archive.zip -d hbfl && ' +
       'cd hbfl && ' +
       'npm ci && ' + // installs dependencies
-      'kill -9 $(pgrep -f node | grep -v ^$$\\$) && ' + // this kills any existing node processes except self
+      'sudo kill -9 $(pgrep -f node | grep -v ^$$\\$) && ' + // this kills any existing node processes except self
       'npm start' // starts app
 
     exec(command, {
       user: 'bitnami',
       host: ip,
-      key: require('fs').readFileSync(path.join(os.homedir(), '.ssh', 'hamster_key'))
+      key: require('fs').readFileSync(path.join(os.homedir(), '.ssh', 'hamster_key_60'))
     }).pipe(process.stdout)
   })
 }

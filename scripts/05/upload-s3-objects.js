@@ -5,7 +5,7 @@ const {
 const helpers = require('./helpers')
 
 // Declare local variables
-const bucketName = '/* TODO: Bucket you created */'
+const bucketName = 'hamster-bucket-mogomotsi-27-08-2023'
 
 async function execute () {
   try {
@@ -23,7 +23,16 @@ async function execute () {
 }
 
 async function uploadS3Object (bucketName, file) {
-  // TODO: Put object in S3
+  const params = {
+    Bucket: bucketName,
+    // AWS made it impossible to make S3 buckets public. It seems bucket contents cannot be public as well
+    // ACL: 'public-read', 
+    Body: file.contents,
+    Key: file.name,
+    ContentType: helpers.getContentType(file.name)
+  }
+  const command = new PutObjectCommand(params)
+  return helpers.sendS3Command(command)
 }
 
 execute()

@@ -12,17 +12,17 @@ const streamBuffers = require('stream-buffers')
 const fs = require('fs')
 
 async function sendSQSCommand (command) {
-  const client = new SQSClient({ region: process.env.AWS_REGION })
+  const client = new SQSClient({ region: 'us-east-1', profile: 'Admin' })
   return client.send(command)
 }
 
 async function sendKinesisCommand (command) {
-  const client = new KinesisClient({ region: process.env.AWS_REGION })
+  const client = new KinesisClient({ region: 'us-east-1', profile: 'Admin' })
   return client.send(command)
 }
 
 async function sendLambdaCommand (command) {
-  const client = new LambdaClient({ region: process.env.AWS_REGION })
+  const client = new LambdaClient({ region: 'us-east-1', profile: 'Admin' })
   return client.send(command)
 }
 
@@ -34,7 +34,7 @@ async function createLambdaKinesisRole () {
     AssumeRolePolicyDocument: '{ "Version": "2012-10-17", "Statement": [ { "Effect": "Allow", "Principal": { "Service": "lambda.amazonaws.com" }, "Action": "sts:AssumeRole" } ] }'
   }
 
-  const client = new IAMClient({ region: process.env.AWS_REGION })
+  const client = new IAMClient({ region: 'us-east-1', profile: 'Admin' })
   const roleCommand = new CreateRoleCommand(params)
   const roleResponse = await client.send(roleCommand)
 

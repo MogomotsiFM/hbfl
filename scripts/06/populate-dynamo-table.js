@@ -23,7 +23,22 @@ async function execute () {
 }
 
 async function populateTable (tableName, data) {
-  // TODO: Upload to table with batch write
+  const params = {
+    RequestItems: {
+      // Note that the property name is the name of a table. The use of sqaure brackets 
+      // is referred to as computed property name.
+      [tableName]: data.map(i => {
+        return {
+          PutRequest: {
+            Item: i
+          }
+        }
+      })
+    }
+  }
+
+  const command = new BatchWriteCommand(params)
+  return sendDynamoItemCommand(command)
 }
 
 execute()
