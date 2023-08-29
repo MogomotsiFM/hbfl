@@ -64,18 +64,18 @@ const init = async () => {
   server.route(routes)
 
   // logging
-  server.events.on('log', (_, event) => {
-    if (event.error) {
-      logger.error(`Server error: ${event.error.message || 'unknown'}`);
+  server.events.on('log', (event, tags) => {
+    if (tags.error) {
+      logger.error(`Server error: ${event.error ? event.error.message : 'unknown'}`);
     } else {
       logger.info(`Server event: ${event}`)
     }
   })
 
-  server.events.on('request', (_, event) => {
+  server.events.on('request', (request, event, tags) => {
     if (event.tags.includes('unauthenticated')) return
-    if (event.tags.includes('error')) {
-      logger.error(`Request error: ${event.data || event.error.message || 'unknown'}`);
+    if (tags.error) {
+      logger.error(`Request ${event.request} error: ${event.error ? event.error.message : 'unknown'}`)
     } else {
       logger.info(`Request event: ${event}`)
     }
