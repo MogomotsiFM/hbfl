@@ -1,11 +1,12 @@
 const { CloudWatchClient } = require('@aws-sdk/client-cloudwatch')
 const { SNSClient } = require('@aws-sdk/client-sns')
-const { KMSClient } = require('@aws-sdk/client-kms')
+const { SecretsManagerClient } = require('@aws-sdk/client-secrets-manager')
 
-async function sendKMSCommand(command) {
-  const client  = new KMSClient({ region: "us-east-1", profile: "Admin" })
+async function sendSecretsManagerCommand(command) {
+  const client = new SecretsManagerClient({ region: "us-east-1", profile: "Admin"})
   return client.send(command)
 }
+
 async function sendSNSCommand (command) {
   const client = new SNSClient({ region: 'us-east-1', profile: 'Admin' })
   return client.send(command)
@@ -19,5 +20,5 @@ async function sendCloudWatchCommand (command) {
 module.exports = {
   sendCloudWatchCommand,
   sendSNSCommand,
-  sendKMSCommand
+  sendSecretsManagerCommand
 }

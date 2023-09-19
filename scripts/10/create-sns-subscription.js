@@ -3,28 +3,25 @@ const {
   SubscribeCommand
 } = require('@aws-sdk/client-sns')
 
-const { 
-  sendKMSCommand,
+const {
+  sendSecretsManagerCommand,
   sendSNSCommand: sendCommand 
 } = require('./helpers')
 
 const {
-  DecryptCommand,
-  KMSClient
-} = require('@aws-sdk/client-kms')
+  GetSecretValueCommand
+} = require('@aws-sdk/client-secrets-manager')
+
 
 // Declare local variables
 const type = 'sms'
-const encryptedPhoneNumber = 'AQICAHiSg2VEiyNrQ/WBsj+bSNRDAPLcX7E7wpAZ7h4JStghtwEV/I3MAOXzc2qYnt7OyI9gAAAAajBoBgkqhkiG9w0BBwagWzBZAgEAMFQGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM0YWMEaaClX4jF7ixAgEQgCeGvJ/m3bC9xrCqx9NKCjmEBeZZfbEJa+A9WTJxMjV47RwNmTfl4L0='
-const encryptionKeyAlias = 'alias/phone-number'
+const secret_name = 'phone_number'
 const topicArn = 'arn:aws:sns:us-east-1:620502844819:hamster-topic'
 
 async function execute () {
   try {
-    const r = await decryptPhoneNumber(encryptedPhoneNumber, encryptionKeyAlias)
-    const plainTextBase64 = r['Plaintext']
-    const endpoint = Buffer.from(plainTextBase64, 'base64').toString('ascii')
-    
+    const endpoint = await getPhoneNumber(secret_name)
+
     const response = await createSubscription(type, topicArn, endpoint)
     console.log(response)
   } catch (err) {
@@ -42,16 +39,14 @@ async function createSubscription (type, topicArn, endpoint) {
   return sendCommand(command)
 }
 
-async function decryptPhoneNumber(encryptedPhoneNumber, encryptionKeyAlias) {
+async function getPhoneNumber(secret_name) {
   const params = {
-    CiphertextBlob: Buffer.from(encryptedPhoneNumber, 'base64'),
-    KeyId: encryptionKeyAlias,
-    EncryptionAlgorithm: "SYMMETRIC_DEFAULT",
-    DryRun: false
+    SecretId: secret_name
   }
-
-  const command = new DecryptCommand(params)
-  return sendKMSCommand(command)
+  const command = new GetSecretValueCommand(params)
+  const secrets = await sendSecretsManagerCommand(command)
+  const json = JSON.parse( secrets.SecretString )
+  return json['phone_number']
 }
 
 execute()
